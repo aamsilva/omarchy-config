@@ -1,0 +1,14 @@
+rule = {
+  matches = {
+    {
+      { "device.name", "equals", "bluez_card.14_28_76_B1_5A_93" },
+    },
+  },
+  apply_properties = {
+    ["bluez5.codecs"] = "[aac sbc_xq]",
+    ["bluez5.enable-msbc"] = true,
+    ["bluez5.enable-hw-volume"] = true,
+    ["session.suspend-timeout-seconds"] = 0,
+  },
+}
+table.insert(bluez_monitor.rules, rule)

@@ -16,7 +16,7 @@ Backup das personalizações do Omarchy (Hyprland + shell).
 omarchy plugin add https://github.com/diegopluna/omarchy-argus.git --enable --yes
 
 # SSD/NVMe health — versão patchada minha com suporte SATA melhorado
-omarchy plugin add https://github.com/augustosilva/omarchy-nvme-health.git --enable --yes
+omarchy plugin add https://github.com/aamsilva/omarchy-nvme-health.git --enable --yes
 
 # Painel btop-style
 omarchy plugin add https://github.com/Woogy7/omarchy-vitals.git --enable --yes

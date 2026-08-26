@@ -1,0 +1,15 @@
+diff --git i/daemon/media/profilechoice.hpp w/daemon/media/profilechoice.hpp
+index 36a9209..2211746 100644
+--- i/daemon/media/profilechoice.hpp
++++ w/daemon/media/profilechoice.hpp
+@@ -76,7 +76,9 @@ inline QString bestPlaybackProfile(const QVector<ProfileCandidate> &candidates)
+         if (bitrate == 0) {
+             bitrate = codecBitrateKbps(codecFromDescription(c.description));
+         }
+-        if (bitrate > bestBitrate || (bitrate == bestBitrate && c.priority > bestPriority)) {
++        // Local patch: PipeWire/WirePlumber profile priority already encodes codec preference
++        // (e.g. AAC 131 > SBC 130); raw bitrate would wrongly pick SBC over the native AAC.
++        if (c.priority > bestPriority || (c.priority == bestPriority && bitrate > bestBitrate)) {
+             bestBitrate = bitrate;
+             bestPriority = c.priority;
+             best = c.name;
