@@ -50,3 +50,4 @@ Verificar: `pactl list cards | grep 'Active Profile'` deve mostrar `a2dp-sink` (
   é propriedade da ligação NM 'ZON-5330_Sala'.
 - WirePlumber 0.5.15 tem bug conhecido (crash g_object_unref após falha A2DP); sem triggers
   não ocorre. Atualizar quando sair versão nova.
+SSH auth configurado 2026-08-26 22:29:10
