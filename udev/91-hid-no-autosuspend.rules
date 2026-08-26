@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="usb", ATTRS{bInterfaceClass}=="03", TEST=="power/control", ATTR{power/control}="on"
