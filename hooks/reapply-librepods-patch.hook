@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Re-aplica o patch AAC do librepods (omapods) apos omarchy plugin update.
+# Um update de plugins pode sobrescrever o profilechoice.hpp patchado localmente.
+
+set -u
+
+PLUGIN=~/.config/omarchy/plugins/io.github.thisisgm.omapods
+PATCH=~/Work/omarchy-config/omapods/aac-priority.patch
+
+if [[ ! -d "$PLUGIN" ]]; then
+  echo "librepods hook: plugin omapods nao instalado, skip"
+  exit 0
+fi
+
+cd "$PLUGIN" || exit 0
+
+# Ja patchado? (marca: a linha do bestPlaybackProfile comeca por "if (c.priority > bestPriority")
+if grep -q '^        if (c.priority > bestPriority' daemon/media/profilechoice.hpp; then
+  echo "librepods hook: patch AAC ja aplicado"
+  exit 0
+fi
+
+echo "librepods hook: a aplicar patch AAC"
+if ! git apply "$PATCH" 2>/dev/null; then
+  echo "librepods hook: patch falhou, tentando --3way"
+  git apply --3way "$PATCH" 2>/dev/null || echo "librepods hook: FALHA ao aplicar patch (manual)"
+fi
+
+# Recompilar + reinstalar + reiniciar
+cmake -S daemon -B daemon/build -G Ninja -DBUILD_TESTING=OFF >/dev/null 2>&1 \
+  && cmake --build daemon/build >/dev/null 2>&1 \
+  && cmake --install daemon/build --prefix "$HOME/.local" >/dev/null 2>&1 \
+  && systemctl --user restart librepods.service \
+  && echo "librepods hook: recompilado e reiniciado OK" \
+  || echo "librepods hook: falha na rebuild (correr manualmente)"
