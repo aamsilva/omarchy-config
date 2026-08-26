@@ -119,3 +119,6 @@ Dados que o firmware TR200 NÃO expõe (ficam "—" honestamente): % vida restan
 - Antes de mudar hardware/rede/drivers: garantir **rollback imediato** e **rede alternativa** à mão.
 - Medir ANTES e DEPOIS com `metric.py`; só aceitar melhoria.
 - Documentar cada experiência em `results.tsv` + commit (ratchet).
+
+### Que correu BEM (auto)
+- Voxtype dictation PT com large-v3-turbo (Vulkan GPU) + SUPER+X
