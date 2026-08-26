@@ -39,6 +39,18 @@ rollback imediato, documentar em results.tsv + commit.
   + rebuild cmake + `systemctl --user restart librepods`.
 - WirePlumber 0.5.15 tem bug de crash (g_object_unref) — sem trigger não ocorre; atualizar quando houver versão nova.
 
+### AirPods PAR PERDIDO → `AuthenticationRejected` (padrão + fix testado)
+Sintomas: `bluetoothctl info` = `Paired:no, Connected:yes`; device liga mas **sem sink A2DP**.
+Causa: entrada stale no storage do bluetoothd (`Trusted=false`, sem LinkKey).
+FIX (ordem):
+1. `bluetoothctl remove 14:28:76:B1:5A:93`
+2. agent: `systemd-run --user --unit=btagent bash -c 'exec bluetoothctl --timeout 900 agent NoInputNoOutput'`
+3. `bluetoothctl pair 14:28:76:B1:5A:93` → "Pairing successful"
+4. `bluetoothctl trust 14:28:76:B1:5A:93`
+5. `systemctl --user restart wireplumber`
+6. `pactl set-card-profile bluez_card.14_28_76_B1_5A_93 a2dp-sink` (AAC)
+7. Verificar `pw-dump` codec=aac + sink default
+
 ### Patches locais apagados por update de plugins
 - Hook `~/.config/omarchy/hooks/post-update.d/reapply-librepods-patch.hook` reaplica automaticamente.
 - Verificar se correu: `omarchy hook post-update` (ou procurar no journal).
