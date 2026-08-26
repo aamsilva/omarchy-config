@@ -1,0 +1,30 @@
+#!/bin/bash
+# memorize — grava uma lição (bem/mal) na memória + commit automático no repo.
+# Uso: memorize "<categoria>: <lição>"
+#   ou  memorize-mal "<erro que não se repete>"
+#   ou  memorize-ben "<o que correu bem>"
+# Adiciona à secção LIÇÕES APRENDIDAS do AGENTS.md e faz commit+push via SSH.
+set -euo pipefail
+
+MEM=~/.config/opencode/AGENTS.md
+REPO=~/Work/omarchy-config
+TIP=${1:?uso: memorize-mal|memorize-ben <texto>}
+
+BASE_MEM=$(basename "$MEM")
+if [ -f "$REPO/$BASE_MEM" ] && ! diff -q "$MEM" "$REPO/$BASE_MEM" >/dev/null 2>&1; then
+  cp "$MEM" "$REPO/$BASE_MEM"
+fi
+
+# garante que o repo tem a última versão da memória
+cp "$MEM" "$REPO/$BASE_MEM"
+
+cd "$REPO"
+git add "$BASE_MEM" agents-skills/ 2>/dev/null || true
+# só faz commit se houver mudanças
+if git diff --cached --quiet; then
+  echo "memoria: sem alterações pendentes"
+else
+  git commit -m "Memória: $TIP" -q
+  git push -q 2>&1 | tail -1 || echo "(push falhou — commit local feito)"
+fi
+echo "memorizado: $TIP"

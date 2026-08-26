@@ -90,6 +90,13 @@ Dados que o firmware TR200 NÃO expõe (ficam "—" honestamente): % vida restan
 
 ## LIÇÕES APRENDIDAS (auto-memorizar — ler sempre)
 
+**REGRAS DE MEMORIZAÇÃO (obrigatório):**
+1. No FIM de cada sessão, gravar as lições com: `omarchy-memorize "<lição>"` (commits automático)
+2. Sempre que algo correr MAL e for resolvido → adicionar a "Que correu MAL" e ao skill `system-ops` o FIX
+3. Sempre que algo correr BEM → adicionar a "Que correu BEM"
+4. Todo fix reutilizável vira passo-a-passo no skill `system-ops` (procedimento acionável)
+5. NUNCA terminar uma sessão sem memorizar e fazer push (`git -C ~/Work/omarchy-config push`)
+
 ### Que correu MAL (nunca repetir)
 1. **Empilhar fixes = não saber a causa.** A noite de 26/08 empilhei 6 mudanças; quando o dongle crashou, não soubemos qual era a culpada. → AutoResearch: UMA mudança por vez.
 2. **Dois drivers para o mesmo chip USB = corrida de bind que derrete o barramento.** Ao mover o dongle para outra porta, o in-tree `rtw89_8851bu` assumiu e matou o USB. → blacklist sempre o driver secundário.
