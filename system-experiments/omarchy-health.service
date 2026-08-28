@@ -1,0 +1,7 @@
+[Unit]
+Description=Omarchy health check (autoresearch metric)
+
+[Service]
+Type=oneshot
+Environment=DISPLAY=:0
+ExecStart=/bin/bash -c 'S=$($HOME/Work/omarchy-config/system-experiments/metric.py); V=${S#SCORE=}; V=${V%% *}; echo "$S" >> $HOME/.local/state/omarchy-health.log; if [ "${V:-100}" -lt 80 ]; then omarchy-launch-about 2>/dev/null; notify-send -u critical -t 0 "Omarchy Health: SCORE $V" "$S"; if echo "$S" | grep -q "AirPods"; then $HOME/Work/omarchy-config/system-experiments/airpods-repair.sh; fi; fi'

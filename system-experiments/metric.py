@@ -58,6 +58,22 @@ def main():
     codec = _run("pw-dump 2>/dev/null | grep -A0 bluez_output | head -1") or _run("pactl list cards 2>/dev/null | grep 'Active Profile'")
     if 'a2dp-sink-sbc' in codec: score -= 10; notes.append("codec=SBC(não AAC)")
 
+    # 7. AirPods paired mas sem sink A2DP (par perdido no firmware, mas ainda ligado)
+    ap = _run("bluetoothctl info 14:28:76:B1:5A:93 2>/dev/null")
+    ap_paired = 'Paired: yes' in ap
+    ap_connected = 'Connected: yes' in ap
+    ap_has_sink = _run("pactl list sinks 2>/dev/null | grep -c bluez_output.14_28_76")
+    ap_has_sink = int(ap_has_sink or 0)
+    if ap_paired and ap_connected and ap_has_sink == 0:
+        score -= 15; notes.append("AirPods sem sink A2DP(-15)")
+    elif ap_connected and not ap_paired:
+        score -= 10; notes.append("AirPods par perdido(-10)")
+
+    # 8. Agente BT persistente ativo (sem agente -> pair falha AuthenticationRejected)
+    bt_agent = _run("systemctl --user is-active bt-agent.service 2>/dev/null").strip()
+    if bt_agent != "active":
+        score -= 10; notes.append("bt-agent inativo(-10)")
+
     score = max(0, int(score))
     print(f"SCORE={score} {' '.join(notes)}")
     return score
