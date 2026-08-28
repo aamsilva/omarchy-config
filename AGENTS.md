@@ -114,6 +114,7 @@ Dados que o firmware TR200 NÃO expõe (ficam "—" honestamente): % vida restan
 6. **SSH para GitHub** (em vez de token expirável) + keyring = backup sempre fazível.
 7. **Backup de tudo em ~/Work/omarchy-config** (configs, incidentes, hooks, patches) — um único repo de verdade.
 8. **Atalho opencodemini** via DesktopEntry + wrapper = ligação fiável ao Mac Mini.
+9. **Autoresume AirPods corrigido** (fork omarchy-pods `b79edcc`): resume espera o sink `bluez_output.<MAC>.1` ser recriado pelo PipeWire (poll 6×500ms) e só faz play depois; `PauseWhenOneRemoved` agora resume com ≥1 pod. Antes o `setDefaultSink`+`play()` corriam antes do sink existir → falha silenciosa.
 
 ### Padrão de decisão
 - Antes de mudar hardware/rede/drivers: garantir **rollback imediato** e **rede alternativa** à mão.

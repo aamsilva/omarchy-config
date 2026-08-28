@@ -2,3 +2,4 @@ date	metric	mudanca	resultado
 2026-08-26	85	baseline pos-HID-autosuspend+porta-frontal	ACEITE
 2026-08-26	95	disable omarchy.media; health monitor timer	ACEITE
 2026-08-26	90	media disabled + health timer ativo	ACEITE
+2026-08-28	90	librepods autoresume: sink-restore poll 6x500ms + resume >=1 pod (b79edcc)	ACEITE
