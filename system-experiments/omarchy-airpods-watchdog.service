@@ -1,0 +1,6 @@
+[Unit]
+Description=AirPods proximity watchdog (auto-reconnect em alcance)
+
+[Service]
+Type=oneshot
+ExecStart=%h/Work/omarchy-config/system-experiments/airpods-watchdog.sh
