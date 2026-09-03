@@ -7,3 +7,4 @@ date	metric	mudanca	resultado
 2026-09-03	85	wifi 5GHz rear + band-a pin + mac-rand never (SCORE 75->85)	ACEITE
 2026-09-03	85	TV bitdepth=10 (XRGB2101010) 4K@60 ok; VRR off (evitado TCL flicker)	ACEITE
 2026-09-03	85	instalados nexthop (io.github.x3me) + quadrant (dev.bvisagie)	ACEITE
+2026-09-03	85	dongle wifi 3-1 autosuspend->on (evita flap; rollback: echo auto)	ACEITE
