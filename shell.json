@@ -2,7 +2,7 @@
   "version": 1,
   "idle": {
     "screensaver": 150,
-    "lock": 300
+    "lock": 999999
   },
   "bar": {
     "position": "top",
@@ -17,18 +17,21 @@
           "id": "omarchy.workspaces"
         },
         {
+          "id": "quickshell.spotify"
+        },
+        {
           "id": "io.github.diegopluna.argus",
           "show": [
             "cpu",
             "cputemp",
-            "gputemp",
             "ram",
-            "disk",
-            "net",
             "gpu",
+            "gputemp",
+            "vram",
+            "disk",
             "io",
-            "load",
-            "vram"
+            "net",
+            "load"
           ]
         }
       ],
@@ -61,6 +64,18 @@
       "right": [
         {
           "id": "omarchy.tray"
+        },
+        {
+          "id": "dev.bvisagie.quadrant"
+        },
+        {
+          "id": "io.github.x3me.nexthop"
+        },
+        {
+          "id": "akitaonrails.ai-usagebar"
+        },
+        {
+          "id": "io.github.thisisgm.omapods"
         },
         {
           "id": "io.github.woogy7.vitals"
