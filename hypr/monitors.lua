@@ -7,10 +7,12 @@ local omarchy_monitor_scale = 1.6
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "", mode = "3840x2160@60", position = "auto", scale = omarchy_monitor_scale })
 
--- TCL 4K TV over HDMI: 10-bit color (less banding), keep fixed 60Hz for low latency.
--- NOTE: VRR deliberately NOT enabled — TCL TVs over HDMI don't reliably support
--- adaptive sync and enabling it can cause flicker/black-screen instability.
-hl.monitor({ output = "HDMI-A-2", mode = "3840x2160@60", position = "0x0", scale = omarchy_monitor_scale, bitdepth = 10 })
+-- TCL 4K TV over HDMI: keep fixed 60Hz for low latency.
+-- bitdepth=10 (10-bit color) TEST in progress — temporarily reverted to 8-bit
+-- to check if 10-bit scanout adds input/display latency. Re-enable if banding bothers you
+-- and latency is unchanged. NOTE: VRR deliberately NOT enabled — TCL TVs over HDMI
+-- don't reliably support adaptive sync and enabling it can cause flicker/black-screen.
+hl.monitor({ output = "HDMI-A-2", mode = "3840x2160@60", position = "0x0", scale = omarchy_monitor_scale })
 
 -- Configure a specific monitor.
 -- hl.monitor({ output = "DP-2", mode = "2560x1440@144", position = "0x0", scale = 1 })

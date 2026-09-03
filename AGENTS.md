@@ -124,6 +124,6 @@ Dados que o firmware TR200 NÃO expõe (ficam "—" honestamente): % vida restan
 
 ### Que correu BEM (auto)
 - Voxtype dictation PT com large-v3-turbo (Vulkan GPU) + SUPER+X
-- TV 4K 10-bit: `bitdepth=10` em `~/.config/hypr/monitors.lua` (HDMI-A-2) → XRGB2101010 sem custo; manter 4K@60 fixo. NÃO ativar `vrr` em TV TCL via HDMI (instável/flicker).
-- Plugins diag instalados e já no shell.json: `io.github.x3me.nexthop` (hop-by-hop latency — diagnosticar flapping RTL8851BU) + `dev.bvisagie.quadrant`.
-- `wifi.mac-address-randomization=never` no perfil NM estabiliza tracking no mesh WiFi (SCORE 75→85).
+- **PERFIL "QUARTO VICENTE"** (PC Omarchy no quarto): dongle WiFi na porta **traseira** `3-1` (front bloqueia 5GHz), TV **TCL 4K** via HDMI-A-2 em **modo Game Mode na TV** + display **8-bit XRGB8888** + 4K@60 fixo. Resultado: **baixa latência input, sem lipsync**, teclado responsivo. `~/.config/hypr/monitors.lua` NÃO usa bitdepth=10 (testámos 10-bit mas com GameMode o 8-bit é o otimizado; manter 8-bit). WiFi `band a` + `wifi.mac-address-randomization=never` no perfil NM. NOTA: `vrr` NUNCA em TV TCL via HDMI (instável/flicker).
+- Plugins diag instalados e já no shell.json: `io.github.x3me.nexthop` (hop-by-hop latency — diagnosticar flapping RTL8851BU). Barra: manter só **Argus** como monitor de sistema (removidos quadrant/vitals/spotify da barra por overlap).
+- USB autosuspend no rato/teclado (lag 1º movimento): `echo on > /sys/bus/usb/devices/1-5/power/control` e `1-7` (receivers Logitech) + `udevadm trigger --subsystem-match=usb` para re-aplicar regras sem replug.
