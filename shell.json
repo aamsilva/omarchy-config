@@ -17,9 +17,6 @@
           "id": "omarchy.workspaces"
         },
         {
-          "id": "quickshell.spotify"
-        },
-        {
           "id": "io.github.diegopluna.argus",
           "show": [
             "cpu",
@@ -66,9 +63,6 @@
           "id": "omarchy.tray"
         },
         {
-          "id": "dev.bvisagie.quadrant"
-        },
-        {
           "id": "io.github.x3me.nexthop"
         },
         {
@@ -76,9 +70,6 @@
         },
         {
           "id": "io.github.thisisgm.omapods"
-        },
-        {
-          "id": "io.github.woogy7.vitals"
         },
         {
           "id": "omarchy.tailscale"
