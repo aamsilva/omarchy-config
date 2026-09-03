@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=opencodemini
+Comment=Conectar ao opencode server no Mac Mini via Tailscale
+Exec=/home/aamsilva/bin/opencodemini
+Icon=utilities-terminal
+Terminal=true
+Categories=Development;Utility;
+StartupNotify=false
