@@ -124,3 +124,6 @@ Dados que o firmware TR200 NÃO expõe (ficam "—" honestamente): % vida restan
 
 ### Que correu BEM (auto)
 - Voxtype dictation PT com large-v3-turbo (Vulkan GPU) + SUPER+X
+- TV 4K 10-bit: `bitdepth=10` em `~/.config/hypr/monitors.lua` (HDMI-A-2) → XRGB2101010 sem custo; manter 4K@60 fixo. NÃO ativar `vrr` em TV TCL via HDMI (instável/flicker).
+- Plugins diag instalados e já no shell.json: `io.github.x3me.nexthop` (hop-by-hop latency — diagnosticar flapping RTL8851BU) + `dev.bvisagie.quadrant`.
+- `wifi.mac-address-randomization=never` no perfil NM estabiliza tracking no mesh WiFi (SCORE 75→85).
