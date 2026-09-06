@@ -33,6 +33,21 @@ rollback imediato, documentar em results.tsv + commit.
 - USB autosuspend no receptor Logitech. Fix: `echo on > /sys/bus/usb/devices/1-7/power/control`
   + udev rules `91-hid-no-autosuspend.rules` e `90-logitech-no-autosuspend.rules`.
 
+### Jogo Armor Critical (ARC) — Electron crash GPU em Wayland → correr via XWayland
+Fonte: revival oficial de Attack Retrieve Capture em https://beta.armorcritical.com/
+(Linux AppImage: https://armorcritical-assets.s3.us-east-2.amazonaws.com/releases/linux/armorcritical.AppImage).
+Instalado em `~/Games/armorcritical/` (extração, não mount — falta `libfuse.so.2`/fuse2).
+SINTOMA: `ac-app` (Electron) aberto direto em Wayland nativo morre com
+`GPU process isn't usable. Goodbye` / `GPU process launch failed: error_code=1002`.
+FIX: wrapper `~/Games/armorcritical/armorcritical.sh`:
+`ELECTRON_OZONE_PLATFORM_HINT=x11` + `LD_LIBRARY_PATH=$HOME/Games/armorcritical/usr/lib`
+(Wayland-NOVIDA ao Linux) e `exec ac-app --no-sandbox`. Lançar pelo menu
+(`~/.local/share/applications/armorcritical.desktop`, o Exec = wrapper; validar com
+`desktop-file-validate`). Testar em background estável: `hyprctl clients` mostra
+`class: ac-app, title: ArmorCritical`.
+NOTA: `pkill -f 'ac-app'` mata o próprio shell (pattern no cmdline do bash)
+→ usar `pkill -x ac-app`.
+
 ### Áudio BT AirPods para de funcionar
 - Codec deve ser AAC (`a2dp-sink`), não SBC. Se voltar a SBC: reaplicar patch librepods
   (`git apply` em `~/.config/omarchy/plugins/io.github.thisisgm.omapods/daemon/media/profilechoice.hpp`)
@@ -50,6 +65,41 @@ FIX (ordem):
 5. `systemctl --user restart wireplumber`
 6. `pactl set-card-profile bluez_card.14_28_76_B1_5A_93 a2dp-sink` (AAC)
 7. Verificar `pw-dump` codec=aac + sink default
+
+### AirPods AUTORESUME falha ao tirar/recolocar pod (sem autoplay)
+Sintoma: tirar um pod → áudio desliga (beep); recolocar → perfil A2DP reativa mas NÃO faz play.
+CAUSA: quando o último pod sai, o perfil vai a `off` e o sink `bluez_output.<MAC>.1` é recriado
+**assincronamente** pelo PipeWire. O `setDefaultSink` + `play()` corriam no instante da reativação,
+antes do sink existir → falha silenciosa, resume nunca disparava.
+FIX (fork `aamsilva/omarchy-pods`, commit `b79edcc`):
+1. `handleEarDetection` → `PauseWhenOneRemoved` resumia só com 2 pods
+   (`primaryInEar && secondaryInEar`); agora resume com ≥1 (`primaryInEar || secondaryInEar`).
+2. Novo `scheduleSinkRestoreAndResume()`: após `activateA2dpProfile()` OK, faz poll 6×500ms
+   até o sink voltar a ser default (`m_pulseAudio->setDefaultSink`), restaura volume snap,
+   e só então `play()`.
+3. Rebuild: `cmake -S daemon -B daemon/build -G Ninja && cmake --build && cmake --install --prefix ~/.local`
+   + `systemctl --user restart librepods`.
+
+### AirPods "ligar não funciona" — não é drama, é arranque lento (connect_failures altos)
+Sintoma: `librepods-ctl status` → `connected:false`, `connect_failures_total`/`reconnect_failures_total`
+a subir; journal mostra "Cannot connect to profile/service / SocketError HostNotFound".
+CAUSA: pods em standby + scan LE preso → as tentativas falham. NÃO é par perdido
+(verificar: `bluetoothctl info` deve mostrar `Paired:yes Trusted:yes Connected:no`).
+FIX: NENHUM — verificar se já ligou passado ~1min (`librepods-ctl status` → connected:true,
+`pactl` card bluez com `a2dp-sink`, `pw-dump` codec `[ aac ]`). Só intervir se continuar
+`connected:false` após 2-3min: aí sim aplicar o padrão PAR PERDIDO acima.
+NOTA: `librepods-ctl ear:one` = behavior 0 (o utilizador usa só 1 pod; right fica `in_ear:false`).
+
+### Áudio metálico/robótico SÓ na TV (HDMI, YouTube webapp soa pior) — causado por formato
+Sintoma: áudio distorcido/"metálico" a sair pela TV (TCL via GPU AMD Ellesmere HDMI),
+AirPods soam bem (mesmo conteúdo). NOVO sintoma visto: só o YouTube webapp soava mal.
+CAUSA: o codec HDMI só suporta `16-bit` (`grep bits /proc/asound/card0/codec#0` → `bits [0x2]: 16`),
+mas o sink do PipeWire negociava `s32le` → incompatibilidade → distorção aguda.
+FIX: forçar s16le no sink via WirePlumber em `~/.config/wireplumber/wireplumber.conf.d/52-hdmi-s16.conf`
+(`monitor.alsa.rules` → match `node.name = alsa_output.pci-0000_1f_00.1.hdmi-stereo-extra3` →
+`audio.format = "S16LE"`). Verificar: `pactl list sinks` → `Sample Specification: s16le 2ch 48000Hz`.
+Backup: `~/Work/omarchy-config/wireplumber/52-hdmi-s16.conf`. Rollback: apagar ficheiro +
+`systemctl --user restart wireplumber`. Confirmado 05/09/2026.
 
 ### Patches locais apagados por update de plugins
 - Hook `~/.config/omarchy/hooks/post-update.d/reapply-librepods-patch.hook` reaplica automaticamente.
