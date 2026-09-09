@@ -26,6 +26,15 @@ rollback imediato, documentar em results.tsv + commit.
 ### Dongle WiFi/BT GREEN (RTL8851BU) crasha ou flapa
 - Driver único: `rtw89_8851bu` está blacklisted (`/etc/modprobe.d/90-blacklist-rtw89-8851bu.conf`);
   o OOT `rtl8851bu-dkms-git` deve ser o único a bind. Se aparecerem 2 drivers → crash USB.
+- **Update do kernel quebra o DKMS (09/09, omarchy 4.0.3, kernel 7.2.3):** update finalizou com "Something went wrong" — único erro = `dkms install rtl8851bu` exit 10 no kernel novo
+  (API cfg80211: `remain_on_channel` ganhou `const u8* rx_addr`; `strncpy` passou a erro sem `#include <string.h>`). FIX (uma mudança, sem reboot até confirmar):
+  1. Rebuild do pacote `-git` puxa o HEAD com compat: `yay -S --rebuild rtl8851bu-dkms-git`
+     (versão atual p/ 7.2+ = `1.19.10.r46.9e37e7a`, fixes 97a3492 + 2504c16/6a53717). Ou manual:
+     `cd ~/.cache/yay/rtl8851bu-dkms-git && git pull && makepkg -f && pkexec pacman -U --noconfirm *.pkg.tar.zst`.
+  2. O pacman como root não lê `~` → copiar `.pkg.tar.zst` para `/tmp` antes do `pkexec pacman -U`.
+  3. Confirmar ANTES de rebootar: `dkms status` → `rtl8851bu/..., 7.2.3-arch1-3, x86_64: installed`
+     (nunca rebootar com `added`).
+  4. O post-update "Restore Linux kernel modules" + hook DKMS recompilam sozinhos; rollout se falhar = snapshot Limine.
 - Flap 2.4GHz: perfis NM `ZON-5330_Sala*` têm `band a` + `bssid 38:8B:59:E2:38:5A` (5GHz only).
 - Verificar `nmcli -g 802-11-wireless.band connection show 'ZON-5330_Sala'` = `a`.
 
