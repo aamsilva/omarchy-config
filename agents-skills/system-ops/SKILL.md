@@ -106,9 +106,11 @@ CAUSA: o codec HDMI só suporta `16-bit` (`grep bits /proc/asound/card0/codec#0`
 mas o sink do PipeWire negociava `s32le` → incompatibilidade → distorção aguda.
 FIX: forçar s16le no sink via WirePlumber em `~/.config/wireplumber/wireplumber.conf.d/52-hdmi-s16.conf`
 (`monitor.alsa.rules` → match `node.name = alsa_output.pci-0000_1f_00.1.pro-output-9` → // node REAL da TV!
-`audio.format = "S16LE"`). NÃO usar `hdmi-stereo-extra3`: a TV está em `eld#0.3` → ALSA device 9 →
-node `pro-output-9` (o extra3 é outro device e deixa o sink em s32le → mudo). Verificar:
-`pactl list sinks` → `Sample Specification: s16le 8ch 48000Hz`.
+`audio.format = "S16LE"` + `audio.channels = "2"`). NÃO usar `hdmi-stereo-extra3`: a TV está em `eld#0.3` →
+ALSA device 9 → node `pro-output-9` (o extra3 é outro device e deixa o sink em s32le → mudo).
+IMPORTANTE 2ch: o ELD da TCL suporta LPCM SÓ 2 canais (`sad0_channels=2`); 8ch só para comprimido —
+sink em 8ch causava paragens de vídeo+áudio. Verificar:
+`pactl list sinks` → `Sample Specification: s16le 2ch 48000Hz`.
 Backup: `~/Work/omarchy-config/wireplumber/52-hdmi-s16.conf`. Rollback: apagar ficheiro +
 `systemctl --user restart wireplumber`. Confirmado 05/09/2026 (node corrigido 09/09).
 
